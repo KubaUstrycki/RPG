@@ -39,7 +39,7 @@ namespace gra
             return x;
         }
 
-        public static void klasagracza()
+        public static void wyborPostac()
         {
             hp = 0;
 
@@ -63,7 +63,7 @@ namespace gra
             }
         }
 
-        public static void potwor()
+        public static void generowanieStatowPotwora()
         {
             Random rnd = new Random();
             mhp = rnd.Next(20, 50);
@@ -139,54 +139,67 @@ namespace gra
             Console.WriteLine("\n *Widzisz ceny na tablic* ");
             Console.WriteLine("\n1 - heal (+25 hp) 5 złota \n 2 - lepsza broń (+20 ataku)  13 złota \n 3 - relaks w spa (+50 many) 8 złota \n dowolny inny numer - wyjdz");
             int input = getIntFromConsole();
-            if (input == 1)
+            switch (input)
             {
-                if ((gold - 5) < 0)
-                {
-                    komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {5 - gold} złota");
-                }
-                else
-                {
-                    gold -= 5;
-                    hp += 25;
-                }
+                case 1:
+                    sklepHeal();
+                    break;
+                case 2:
+                    sklepBron();
+                    break;
+                case 3:
+                    sklepRelaksSpa();
+                    break;
+                default:
+                    komunikat("\nWychodzisz ze sklepu");
+                    break;
             }
-            else if (input == 2)
-            {
-                if ((gold - 15) < 0)
-                {
-                    komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {15 - gold} złota");
+        }
 
-                }
-                else
-                {
-                    gold -= 15;
-                    attack += 20;
-                }
-            }
-            else if (input == 3)
-            {
 
-                if (gold - 8 < 0)
-                {
-                    komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {8 - gold} złota");
-                }
-                else
-                {
-                    gold -= 8;
-                    mana += 50;
-                }
+        static void sklepRelaksSpa()
+        {
+            if (gold - 8 < 0)
+            {
+                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {8 - gold} złota");
             }
             else
             {
-                komunikat("\nWychodzisz ze sklepu");
+                gold -= 8;
+                mana += 50;
+            }
+        }
+
+        static void sklepBron()
+        {
+            if ((gold - 15) < 0)
+            {
+                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {15 - gold} złota");
+            }
+            else
+            {
+                gold -= 15;
+                attack += 20;
+            }
+        }
+
+        static void sklepHeal()
+        {
+            if ((gold - 5) < 0)
+            {
+                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {5 - gold} złota");
+            }
+            else
+            {
+                gold -= 5;
+                hp += 25;
             }
         }
 
         static void Main()
         {
             int round = 0;
-            klasagracza();
+            wyborPostac();
             while (hp > 0)
             {
 
@@ -202,143 +215,179 @@ namespace gra
                 else if (inp == 2)
                 {
                     Console.Clear();
-                    potwor();
-                    while (hp > 0)
+                    generowanieStatowPotwora();
+
+                    Random rnn = new Random();
+
+                    int r = rnn.Next(8, 16);
+                    if (round == r)
                     {
-                        Random rnn = new Random();
-                        int r = rnn.Next(8, 16);
-                        if (round == r)
-                        {
-                            komunikat($"\n SPOTYKASZ BOSA!!!!\n Jego staty to :\n hp - {bhp} \n dmg - {battack} \n mana - {bmana} \n gold - {bgold}\n\n TYM RAZEM NIE UCIEKNIESZ!!!\n 1 - Walczysz!!\n 2 - Używasz Zaklęć");
-
-                            int i = getIntFromConsole();
-                            if (i == 1)
-                            {
-                                int runda = 1;
-                                komunikat("Walka!!!");
-                                while (mhp > 0)
-                                {
-
-                                    komunikat($"\nBoss zadaje ci {battack}");
-                                    hp -= mattack;
-                                    komunikat($"\nTy zadajesz mu {attack}");
-                                    mhp -= attack;
-
-                                    if (hp <= 0)
-                                    {
-                                        komunikat("\nUmierasz w jego paszczy !!!");
-
-
-                                    }
-                                    komunikat($"\nzabierasz Bossowi {bgold} złota i pobierasz kawałki manny z jego duszy");
-                                    gold += bgold;
-                                    mana += bmana;
-                                    runda += 1;
-
-
-                                }
-                                break;
-                            }
-                            if (i == 2)
-                            {
-                                int z = 0;
-                                komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n Boost(+10 hp   +30 dmg   -30 many)\n Super Sayanin(+100 hp   +1000 dmg   -400 many)");
-                                z = getIntFromConsole();
-                                if (z == 1)
-                                {
-                                    heal();
-                                }
-                                if (z == 2)
-                                {
-                                    megaHeal();
-                                }
-                                if (z == 3)
-                                {
-                                    boost();
-                                }
-                                if (z == 4)
-                                {
-                                    superBoost();
-                                }
-                                else
-                                {
-                                    komunikat("\nzły numer");
-                                }
-                            }
-                            round = 0;
-                        }
+                        bossSpotkanie();
+                        round = 0;
+                    }
+                    else
+                    {
+                        normalSpotkanie();
                         round += 1;
-                        Console.WriteLine("\n Spotykasz potwora\nCo robisz?\n 1 - Walczysz\n 2 - Używasz Zaklęć\n 3 - spróbuj ucieczki");
-                        Console.WriteLine($"\n Potwór: hp - {mhp}\n dmg - {mattack}\n mana - {mmana}\n złoto - {mgold}");
-                        int input = getIntFromConsole();
-                        int x = 0;
-                        if (input == 1)
-                        {
-                            Console.Clear();
-                            int runda = 1;
-                            Console.WriteLine("Walka");
-                            while (mhp > 0)
-                            {
-
-                                komunikat($"\nPotwór zadaje ci {mattack}");
-                                hp -= mattack;
-                                komunikat($"\nTy zadajesz mu {attack}");
-                                mhp -= attack;
-
-                                if (hp <= 0)
-                                {
-                                    komunikat("\nUmierasz !!!");
-
-
-                                }
-
-                                runda += 1;
-
-                            }
-                            komunikat($"\nzabierasz potworowi {mgold} złota i pobierasz kawałki many z jego duszy");
-                            gold += mgold;
-                            mana += mmana;
-                            break;
-                        }
-                        if (input == 2)
-                        {
-                            komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n Boost(+10 hp   +30 dmg   -30 many)");
-                            x = getIntFromConsole();
-                            if (x == 1)
-                            {
-                                heal();
-                            }
-                            if (x == 2)
-                            {
-                                megaHeal();
-                            }
-                            if (x == 3)
-                            {
-                                boost();
-                            }
-                            else
-                            {
-                                komunikat("\nzły numer");
-                            }
-                        }
-                        if (input == 3)
-                        {
-                            komunikat("\nUciekasz");
-                            Random rnd = new Random();
-                            int ucieczka = rnd.Next(1, 6);
-                            if (ucieczka == 2 || ucieczka == 5)
-                            {
-                                komunikat("\nUdaje ci się uciec");
-                                break;
-                            }
-                            else
-                            {
-                                hp -= (mattack * 2);
-                                komunikat("\nNie udaje ci się uciec potwór zadaje ci podwójne obrażenia");
-                            }
-                        }
                     }
                 }
+            }
+        }
+
+
+        static void normalwalka()
+        {
+            Console.Clear();
+            int runda = 1;
+            Console.WriteLine("Walka");
+            while (mhp > 0)
+            {
+
+                komunikat($"\nPotwór zadaje ci {mattack}");
+                hp -= mattack;
+                komunikat($"\nTy zadajesz mu {attack}");
+                mhp -= attack;
+
+                if (hp <= 0)
+                {
+                    komunikat("UMARŁEŚ!!!!");
+                    return;
+                }
+
+                runda += 1;
+            }
+            komunikat($"\nzabierasz potworowi {mgold} złota i pobierasz kawałki many z jego duszy");
+            gold += mgold;
+            mana += mmana;
+        }
+
+        static int normalZaklecia()
+        {
+            int x;
+            komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n 3 - Boost(+10 hp   +30 dmg   -30 many)");
+            x = getIntFromConsole();
+            if (x == 1)
+            {
+                heal();
+            }
+            if (x == 2)
+            {
+                megaHeal();
+            }
+            if (x == 3)
+            {
+                boost();
+            }
+            else
+            {
+                komunikat("\nzły numer");
+            }
+
+            return x;
+        }
+
+        static void normalUcieczka()
+        {
+            komunikat("\nUciekasz");
+            Random rnd = new Random();
+            int ucieczka = rnd.Next(1, 6);
+            if (ucieczka == 2 || ucieczka == 5)
+            {
+                komunikat("\nUdaje ci się uciec");
+            }
+            else
+            {
+                hp -= (mattack * 2);
+                komunikat("\nNie udaje ci się uciec potwór zadaje ci podwójne obrażenia");
+            }
+        }
+
+        static void normalSpotkanie()
+        {
+            Console.WriteLine("\n Spotykasz potwora\nCo robisz?\n 1 - Walczysz\n 2 - Używasz Zaklęć\n 3 - spróbuj ucieczki");
+            Console.WriteLine($"\n Potwór: hp - {mhp}\n dmg - {mattack}\n mana - {mmana}\n złoto - {mgold}");
+            int input = getIntFromConsole();
+            int x = 0;
+            if (input == 1)
+            {
+                normalwalka();
+            }
+            if (input == 2)
+            {
+                x = normalZaklecia();
+            }
+            if (input == 3)
+            {
+                normalUcieczka();
+            }
+        }
+        private static void bossSpotkanie()
+        {
+            komunikat($"\n SPOTYKASZ BOSA!!!!\n Jego staty to :\n hp - {bhp} \n dmg - {battack} \n mana - {bmana} \n gold - {bgold}\n\n TYM RAZEM NIE UCIEKNIESZ!!!\n 1 - Walczysz!!\n 2 - Używasz Zaklęć");
+
+            int i = getIntFromConsole();
+            if (i == 1)
+            {
+                bossWalka();
+
+            }
+            if (i == 2)
+            {
+                bossZaklecia();
+            }
+        }
+
+        private static void bossWalka()
+        {
+            int runda = 1;
+            komunikat("Walka!!!");
+            while (mhp > 0)
+            {
+
+                komunikat($"\nBoss zadaje ci {battack}");
+                hp -= mattack;
+                komunikat($"\nTy zadajesz mu {attack}");
+                mhp -= attack;
+
+                if (hp <= 0)
+                {
+                    throw new Exception("Umarłeś");
+
+
+                }
+                komunikat($"\nzabierasz Bossowi {bgold} złota i pobierasz kawałki manny z jego duszy");
+                gold += bgold;
+                mana += bmana;
+                runda += 1;
+
+
+            }
+        }
+
+        private static void bossZaklecia()
+        {
+            int z = 0;
+            komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n Boost(+10 hp   +30 dmg   -30 many)\n Super Sayanin(+100 hp   +1000 dmg   -400 many)");
+            z = getIntFromConsole();
+            if (z == 1)
+            {
+                heal();
+            }
+            if (z == 2)
+            {
+                megaHeal();
+            }
+            if (z == 3)
+            {
+                boost();
+            }
+            if (z == 4)
+            {
+                superBoost();
+            }
+            else
+            {
+                komunikat("\nzły numer");
             }
         }
     }
