@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 
@@ -6,20 +7,48 @@ namespace gra
 {
     class gra
     {
+
         static int[,] postacie = { { 200, 60, 0, 15 }, { 150, 30, 150, 20 }, { 120, 40, 30, 35 }, { 9999999, 9999999, 9999999, 9999999 } };
         static String[] nazwyPostaci = { "Wojownik", "Mag", "Bandyta", "BÓG" };
-
+        static int poziom = 0;
         static int hp, attack, mana, gold = 0;
         static int mhp, mattack, mmana, mgold = 0;
-        static int bhp, battack, bmana, bgold = 0;
         static String name = "";
+        static String mname = "";
 
         static void komunikat(string x)
         {
-            Console.Clear();
-            Console.WriteLine(x);
+            staty();
+            Console.WriteLine("\n◄►─────────────────────────────────────────────────────────────────────◄►");
+            Console.WriteLine($"{x}  ");
+            Console.WriteLine("◄►─────────────────────────────────────────────────────────────────────◄►");
             Console.ReadKey();
             Console.Clear();
+            staty();
+        }
+        static void staty()
+        {
+            if (name == "") 
+                return;
+            Console.Clear();
+            Console.WriteLine("◄►───────────────────────────────◄►");
+            Console.WriteLine($"    KLASA    ────► {name}");
+            Console.WriteLine($"    HP       ────► {hp} ");
+            Console.WriteLine($"    ATTACK   ────► {attack} ");
+            Console.WriteLine($"    MANA     ────► {mana} ");
+            Console.WriteLine($"    GOLD     ────► {gold} ");
+            Console.WriteLine("◄►───────────────────────────────◄►");
+            if (mhp > 0)
+            {
+                Console.WriteLine("◄►───────────────────────────────◄►");
+                Console.WriteLine($"    NAZWA    ────► {mname} ");
+                Console.WriteLine($"    HP       ────► {mhp} ");
+                Console.WriteLine($"    ATTACK   ────► {mattack} ");
+                Console.WriteLine($"    MANA     ────► {mmana} ");
+                Console.WriteLine($"    GOLD     ────► {mgold} ");
+                Console.WriteLine("◄►───────────────────────────────◄►");
+            }
+
         }
 
         static int getIntFromConsole()
@@ -39,17 +68,43 @@ namespace gra
             return x;
         }
 
+        public static void poziomTrudnosci()
+        {
+            Console.WriteLine("\n◄►───────────WYBIERZ─POZIOM─TRUDNOŚCI─────────────◄►");
+            Console.WriteLine("        1 ────► Łatwy");
+            Console.WriteLine("        2 ────► Średni");
+            Console.WriteLine("        3 ────► Trudny");
+            Console.WriteLine("        4 ────► Imposible");
+            Console.WriteLine("◄►──────────────────────────────────────────────────◄►");
+            while (poziom == 0)
+            {
+                poziom = getIntFromConsole();
+                if (poziom > 4 || poziom < 1)
+                {
+                    Console.WriteLine("Podaj poziom pomiędzy 1 a 4");
+                    poziom = 0;
+                }
+            }
+            Console.Clear();
+        }
+
+
         public static void wyborPostac()
         {
             hp = 0;
 
+            Console.WriteLine("\n◄►─────────────────WYBIERZ─POSTAĆ─────────────────◄►");
+            Console.WriteLine("        1 ────► Wojownik");
+            Console.WriteLine("        2 ────► Mag");
+            Console.WriteLine("        3 ────► Bandyta");
+            Console.WriteLine("◄►──────────────────────────────────────────────────◄►");
             while (hp == 0)
             {
-                Console.WriteLine("Wybor postaci: \n Wojownik - 1 \n Mag - 2 \n bandyta - 3 ");
                 int input = getIntFromConsole();
                 if (input != 1 && input != 2 && input != 3 && input != 4)
                 {
-                    komunikat("zły numer");
+                    Console.WriteLine("zły numer");
+                    
                 }
                 else
                 {
@@ -61,19 +116,68 @@ namespace gra
                     name = nazwyPostaci[x];
                 }
             }
+            staty();
         }
 
         public static void generowanieStatowPotwora()
         {
             Random rnd = new Random();
-            mhp = rnd.Next(20, 50);
-            mattack = rnd.Next(15, 50);
-            mmana = rnd.Next(5, 20);
-            mgold = rnd.Next(3, 40);
-            bhp = rnd.Next(200, 350);
-            battack = rnd.Next(50, 100);
-            bmana = rnd.Next(15, 30);
-            bgold = rnd.Next(100, 160);
+            switch (poziom)
+            {
+                case 1:
+                    mhp = rnd.Next(20, 50);
+                    mattack = rnd.Next(15, 50);
+                    mmana = rnd.Next(5, 20);
+                    mgold = rnd.Next(3, 40);
+                    break;
+                case 2:
+                    mhp = rnd.Next(40, 70);
+                    mattack = rnd.Next(20, 55);
+                    mmana = rnd.Next(10, 30);
+                    mgold = rnd.Next(3, 40);
+                    break;
+                case 3:
+                    mhp = rnd.Next(60, 100);
+                    mattack = rnd.Next(40, 65);
+                    mmana = rnd.Next(20, 50);
+                    mgold = rnd.Next(12, 45);
+                    break;
+                case 4:
+                    mhp = rnd.Next(60, 100);
+                    mattack = rnd.Next(50, 70);
+                    mmana = rnd.Next(30, 50);
+                    mgold = rnd.Next(20, 50);
+
+                    break;
+            }
+            danePotwora();
+        }
+        public static void danePotwora()
+        {
+            if (mhp <= 30)
+            {
+                mname = "SZCZĄTKI";
+            }
+            else if (mhp > 30 && mhp <= 80)
+            {
+                mname = "SZKIELET";
+            }
+            else if (mhp > 80 && mhp <= 100)
+            {
+                mname = "ZOMBIE";
+            }
+            else if (mhp > 100 && mhp <= 130)
+            {
+                mname = "MINOTAUR";
+            }
+            else if (mhp > 120 && mhp <= 180)
+            {
+                mname = "SMOK";
+            }
+            else if (mhp > 180)
+            {
+                mname = "ŻNIWIARZ";
+            }
         }
 
         public static void heal()
@@ -90,6 +194,7 @@ namespace gra
                 komunikat("Brak many");
             }
         }
+
         public static void megaHeal()
         {
             if (mana >= 100)
@@ -133,11 +238,16 @@ namespace gra
         }
 
 
+
         public static void sklep()
         {
-            Console.Clear();
-            Console.WriteLine("\n *Widzisz ceny na tablic* ");
-            Console.WriteLine("\n1 - heal (+25 hp) 5 złota \n 2 - lepsza broń (+20 ataku)  13 złota \n 3 - relaks w spa (+50 many) 8 złota \n dowolny inny numer - wyjdz");
+            staty();
+            Console.WriteLine("\n◄►───────────────────────────────────────────────◄►");
+            Console.WriteLine("    1 ────► heal (+25 hp)            5 złota");
+            Console.WriteLine("    2 ────► lepsza broń (+20 ataku) 13 złota");
+            Console.WriteLine("    3 ────► relaks w spa (+50 many)  8 złota");
+            Console.WriteLine("    * ────► wyjdz z sklepu");
+            Console.WriteLine("◄►───────────────────────────────────────────────◄►");
             int input = getIntFromConsole();
             switch (input)
             {
@@ -151,7 +261,7 @@ namespace gra
                     sklepRelaksSpa();
                     break;
                 default:
-                    komunikat("\nWychodzisz ze sklepu");
+                    komunikat("Wychodzisz ze sklepu");
                     break;
             }
         }
@@ -159,39 +269,42 @@ namespace gra
 
         static void sklepRelaksSpa()
         {
-            if (gold - 8 < 0)
+            const int CENA_SPA = 8;
+            if (gold - CENA_SPA < 0)
             {
-                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {8 - gold} złota");
+                komunikat($"Nie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {CENA_SPA - gold} złota");
             }
             else
             {
-                gold -= 8;
+                gold -= CENA_SPA;
                 mana += 50;
             }
         }
 
         static void sklepBron()
         {
-            if ((gold - 15) < 0)
+            const int CENA_BRON = 15;
+            if ((gold - CENA_BRON) < 0)
             {
-                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {15 - gold} złota");
+                komunikat($"Nie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {CENA_BRON - gold} złota");
             }
             else
             {
-                gold -= 15;
+                gold -= CENA_BRON;
                 attack += 20;
             }
         }
 
         static void sklepHeal()
         {
-            if ((gold - 5) < 0)
+            const int CENA_HEAL = 5;
+            if ((gold - CENA_HEAL) < 0)
             {
-                komunikat($"\nnie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {5 - gold} złota");
+                komunikat($"Nie masz wystarczająco pieniędzy\n Potrzebujesz jeszcze {CENA_HEAL - gold} złota");
             }
             else
             {
-                gold -= 5;
+                gold -= CENA_HEAL;
                 hp += 25;
             }
         }
@@ -199,14 +312,16 @@ namespace gra
         static void Main()
         {
             int round = 0;
+            poziomTrudnosci();
             wyborPostac();
             while (hp > 0)
             {
+                staty();
+                Console.WriteLine("\n◄►────────────────CO─CHCESZ─ZROBIĆ────────────────◄►");
+                Console.WriteLine("    1 ────► Idz do sklepu");
+                Console.WriteLine("    2 ────► Idz na wyprawe");
+                Console.WriteLine("◄►────────────────────────────────────────────────◄►");
 
-                Console.Clear();
-                Console.WriteLine($"\n{name}:\n hp - {hp}\n dmg - {attack}\n mana - {mana}\n złoto - {gold}");
-                Console.WriteLine("\n===============\n");
-                Console.WriteLine("\nCo chcesz zrobić? \n 1 - Idz do sklepu\n 2 - Idz na wyprawe");
                 int inp = getIntFromConsole();
                 if (inp == 1)
                 {
@@ -214,14 +329,18 @@ namespace gra
                 }
                 else if (inp == 2)
                 {
-                    Console.Clear();
                     generowanieStatowPotwora();
+                    staty();
 
                     Random rnn = new Random();
 
                     int r = rnn.Next(8, 16);
                     if (round == r)
                     {
+                        mhp = mhp * 4 + 50;
+                        mattack = mattack * 3;
+                        mmana = mmana * 3 + 100;
+                        mgold = mgold * 3;
                         bossSpotkanie();
                         round = 0;
                     }
@@ -237,50 +356,57 @@ namespace gra
 
         static void normalwalka()
         {
-            Console.Clear();
+            staty();
             int runda = 1;
             Console.WriteLine("Walka");
-            while (mhp > 0)
+
+            hp -= mattack;
+            if (hp < 0) { hp = 0; }
+            mhp -= attack;
+            if (mhp < 0) { mhp = 0; }
+
+            komunikat($"Potwór zadaje ci {mattack}\nTy zadajesz mu {attack}");
+
+            if (hp == 0)
             {
-
-                komunikat($"\nPotwór zadaje ci {mattack}");
-                hp -= mattack;
-                komunikat($"\nTy zadajesz mu {attack}");
-                mhp -= attack;
-
-                if (hp <= 0)
-                {
-                    komunikat("UMARŁEŚ!!!!");
-                    return;
-                }
-
-                runda += 1;
+                komunikat("UMARŁEŚ!!!!");
+                return;
             }
-            komunikat($"\nzabierasz potworowi {mgold} złota i pobierasz kawałki many z jego duszy");
-            gold += mgold;
-            mana += mmana;
+
+            runda += 1;
+
+            if (mhp == 0)
+            {
+                komunikat($"zabierasz potworowi {mgold} złota i pobierasz kawałki many z jego duszy");
+                gold += mgold;
+                mana += mmana;
+            }
         }
 
         static int normalZaklecia()
         {
             int x;
-            komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n 3 - Boost(+10 hp   +30 dmg   -30 many)");
+            staty();
+            Console.WriteLine("\n◄►───────────────────────────────────────────────────────────────────────◄►");
+            Console.WriteLine("    1 ────► heal                           +15 hp      -20 many");
+            Console.WriteLine("    2 ────► Mega Heal                      +90 hp     -100 many)");
+            Console.WriteLine("    3 ────► Boost              +30 dmg     +10 hp      -30 many)");
+            Console.WriteLine("◄►───────────────────────────────────────────────────────────────────────◄►");
             x = getIntFromConsole();
-            if (x == 1)
+            switch (x)
             {
-                heal();
-            }
-            if (x == 2)
-            {
-                megaHeal();
-            }
-            if (x == 3)
-            {
-                boost();
-            }
-            else
-            {
-                komunikat("\nzły numer");
+                case 1:
+                    heal();
+                    break;
+                case 2:
+                    megaHeal();
+                    break;
+                case 3:
+                    boost();
+                    break;
+                default:
+                    komunikat("zły numer");
+                    break;
             }
 
             return x;
@@ -288,42 +414,54 @@ namespace gra
 
         static void normalUcieczka()
         {
-            komunikat("\nUciekasz");
+            komunikat("Uciekasz");
             Random rnd = new Random();
             int ucieczka = rnd.Next(1, 6);
             if (ucieczka == 2 || ucieczka == 5)
             {
-                komunikat("\nUdaje ci się uciec");
+                komunikat("Udaje ci się uciec");
             }
             else
             {
                 hp -= (mattack * 2);
-                komunikat("\nNie udaje ci się uciec potwór zadaje ci podwójne obrażenia");
+                komunikat("Nie udaje ci się uciec potwór zadaje ci podwójne obrażenia");
             }
         }
 
         static void normalSpotkanie()
         {
-            Console.WriteLine("\n Spotykasz potwora\nCo robisz?\n 1 - Walczysz\n 2 - Używasz Zaklęć\n 3 - spróbuj ucieczki");
-            Console.WriteLine($"\n Potwór: hp - {mhp}\n dmg - {mattack}\n mana - {mmana}\n złoto - {mgold}");
-            int input = getIntFromConsole();
-            int x = 0;
-            if (input == 1)
+
+            while (mhp > 0)
             {
-                normalwalka();
-            }
-            if (input == 2)
-            {
-                x = normalZaklecia();
-            }
-            if (input == 3)
-            {
-                normalUcieczka();
+                Console.WriteLine("\n◄►────────────────SPOTYKASZ─POTWORA────────────────◄►");
+                Console.WriteLine("    1 ────► Walczysz");
+                Console.WriteLine("    2 ────► Używasz Zaklęć");
+                Console.WriteLine("    3 ────► Spróbuj ucieczki");
+                Console.WriteLine("◄►────────────────────────────────────────────────◄►");
+
+                int input = getIntFromConsole();
+                if (input == 1)
+                {
+                    normalwalka();
+                }
+                if (input == 2)
+                {
+                    normalZaklecia();
+                }
+                if (input == 3)
+                {   
+                    normalUcieczka();
+                }
             }
         }
         private static void bossSpotkanie()
         {
-            komunikat($"\n SPOTYKASZ BOSA!!!!\n Jego staty to :\n hp - {bhp} \n dmg - {battack} \n mana - {bmana} \n gold - {bgold}\n\n TYM RAZEM NIE UCIEKNIESZ!!!\n 1 - Walczysz!!\n 2 - Używasz Zaklęć");
+            Console.WriteLine("\n◄►────────────────SPOTYKASZ─BOSSA────────────────◄►");
+            Console.WriteLine("    1 ────► Walczysz");
+            Console.WriteLine("    2 ────► Używasz Zaklęć");
+            Console.WriteLine("    3 ────► Spróbuj ucieczki");
+            Console.WriteLine("◄►───────────────────────────────────────────────◄►");
+
 
             int i = getIntFromConsole();
             if (i == 1)
@@ -344,9 +482,9 @@ namespace gra
             while (mhp > 0)
             {
 
-                komunikat($"\nBoss zadaje ci {battack}");
+                komunikat($"Boss zadaje ci {mattack}");
                 hp -= mattack;
-                komunikat($"\nTy zadajesz mu {attack}");
+                komunikat($"Ty zadajesz mu {attack}");
                 mhp -= attack;
 
                 if (hp <= 0)
@@ -355,9 +493,9 @@ namespace gra
 
 
                 }
-                komunikat($"\nzabierasz Bossowi {bgold} złota i pobierasz kawałki manny z jego duszy");
-                gold += bgold;
-                mana += bmana;
+                komunikat($"zabierasz Bossowi {mgold} złota i pobierasz kawałki manny z jego duszy");
+                gold += mgold;
+                mana += mmana;
                 runda += 1;
 
 
@@ -367,7 +505,13 @@ namespace gra
         private static void bossZaklecia()
         {
             int z = 0;
-            komunikat("\nZaklęcia\n 1 - heal(+15   hp   -20 many)\n 2 - Mega Heal(+90   hp   -100 many)\n Boost(+10 hp   +30 dmg   -30 many)\n Super Sayanin(+100 hp   +1000 dmg   -400 many)");
+            staty();
+            Console.WriteLine("\n◄►───────────────────────────────────────────────────────────────────────◄►");
+            Console.WriteLine("    1 ────► heal                           +15 hp      -20 many");
+            Console.WriteLine("    2 ────► Mega Heal                      +90 hp     -100 many)");
+            Console.WriteLine("    3 ────► Boost              +30 dmg     +10 hp      -30 many)");
+            Console.WriteLine("    4 ────► Super Sayanin    +1000 dmg    +100 hp     -400 many)");
+            Console.WriteLine("◄►───────────────────────────────────────────────────────────────────────◄►");
             z = getIntFromConsole();
             if (z == 1)
             {
@@ -387,7 +531,7 @@ namespace gra
             }
             else
             {
-                komunikat("\nzły numer");
+                komunikat("zły numer");
             }
         }
     }
