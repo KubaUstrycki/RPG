@@ -9,17 +9,15 @@ namespace ConsoleApp2
 {
     internal class Sklep : Konsola
     {
-        Gracz gracz;
+        Postac gracz;
 
-        public Sklep(Gracz gracz)
+        public Sklep(Postac gracz)
         {
             this.gracz = gracz;
         }
 
         public void sklep()
         {
-            
-            gracz.staty();
             Console.WriteLine("\n◄►───────────────────────────────────────────────◄►");
             Console.WriteLine("    1 ────► heal (+25 hp)            5 złota");
             Console.WriteLine("    2 ────► lepsza broń (+20 ataku) 13 złota");

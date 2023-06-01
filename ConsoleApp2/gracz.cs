@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApp2
@@ -13,7 +15,7 @@ namespace ConsoleApp2
         String[] nazwyPostaci = { "Wojownik", "Mag", "Bandyta", "BÓG" };
         public Gracz(int klasa)
         {
-            
+
             hp = postacie[klasa, 0];
             atak = postacie[klasa, 1];
             mana = postacie[klasa, 2];
@@ -21,18 +23,9 @@ namespace ConsoleApp2
             name = nazwyPostaci[klasa];
         }
 
-        void komunikat(string x)
-        {
-            staty();
-            Console.WriteLine("\n◄►─────────────────────────────────────────────────────────────────────◄►");
-            Console.WriteLine($"{x}  ");
-            Console.WriteLine("◄►─────────────────────────────────────────────────────────────────────◄►");
-            Console.ReadKey();
-            Console.Clear();
-            staty();
-        }
 
-        public  void heal()
+
+        public void heal()
         {
             if (mana >= 20)
             {
@@ -47,7 +40,7 @@ namespace ConsoleApp2
             }
         }
 
-        public  void megaHeal()
+        public void megaHeal()
         {
             if (mana >= 100)
             {
@@ -60,7 +53,7 @@ namespace ConsoleApp2
                 komunikat("Brak many");
             }
         }
-        public  void boost()
+        public void boost()
         {
             if (mana >= 30)
             {
@@ -74,7 +67,7 @@ namespace ConsoleApp2
                 komunikat("Brak many");
             }
         }
-        public  void superBoost()
+        public void superBoost()
         {
             if (mana >= 30)
             {
@@ -87,6 +80,77 @@ namespace ConsoleApp2
             {
                 komunikat("Brak many");
             }
+        }
+
+        public int ucieczka(Potwor potwor)
+        {
+            Random rnd = new Random();
+            int ucieczka = rnd.Next(1, 6);
+            for (int i = 0; i != 3; i++)
+            {
+                Console.Clear();
+                Console.WriteLine("◄►─────────────────────────────◄►");
+                Console.WriteLine($"           ZA {3 - i}");
+                Console.WriteLine("◄►─────────────────────────────◄►");
+                Thread.Sleep(new TimeSpan(0, 0, 1));
+            }
+            if (ucieczka == 2 || ucieczka == 5)
+            {
+                komunikat("Udaje ci się uciec");
+                return 1; 
+            }
+            else
+            {
+                hp -= (potwor.atak * 2);
+                komunikat("Nie udaje ci się uciec potwór zadaje ci podwójne obrażenia");
+                return 0;
+            }
+        }
+
+        public void zaklecia(bool isBoss)
+        {
+            int x;
+            Console.WriteLine("\n◄►───────────────────────────────────────────────────────────────────────◄►");
+            Console.WriteLine("    1 ────► heal                           +15 hp      -20 many");
+            Console.WriteLine("    2 ────► Mega Heal                      +90 hp     -100 many)");
+            Console.WriteLine("    3 ────► Boost              +30 dmg     +10 hp      -30 many)");
+            if (isBoss)
+            Console.WriteLine("    4 ────► Super Sayanin    +1000 dmg    +100 hp     -400 many)");
+            Console.WriteLine("◄►───────────────────────────────────────────────────────────────────────◄►");
+            x = getIntFromConsole();
+            switch (x)
+            {
+                case 1:
+                    heal();
+                    break;
+                case 2:
+                    megaHeal();
+                    break;
+                case 3:
+                    boost();
+                    break;
+                case 4:
+                    if (isBoss)
+                        superBoost();
+                    else
+                    {
+                        komunikat("zły numer");
+                    }
+                    break;
+                default:
+                    komunikat("zły numer");
+                    break;
+            }
+        }
+        public void walka(Potwor potwor)
+        {
+            Console.WriteLine("Walka");
+            walka((Postac)potwor);
+        }
+        public void staty()
+        {
+            Console.WriteLine("◄►─────────────GRACZ────────────◄►");
+            base.staty();
         }
     }
 }

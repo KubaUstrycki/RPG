@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="boss.cs" />
     <Compile Include="gracz.cs" />
     <Compile Include="Konsola.cs" />
     <Compile Include="Postac.cs" />
